@@ -46,6 +46,16 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="AssemblyVersion.cs" />
+    <Compile Include="Com\Latipium\Daemon\Api\Model\DaemonVersion.cs" />
+    <Compile Include="Com\Latipium\Daemon\Api\Model\DisplayDetectData.cs" />
+    <Compile Include="Com\Latipium\Daemon\Api\Model\Error.cs" />
+    <Compile Include="Com\Latipium\Daemon\Api\Model\LoadModuleRequest.cs" />
+    <Compile Include="Com\Latipium\Daemon\Api\Model\ResponseObject.cs" />
+    <Compile Include="Com\Latipium\Daemon\Api\Model\Side.cs" />
+    <Compile Include="Com\Latipium\Daemon\Api\Model\StartSessionResponse.cs" />
+    <Compile Include="Com\Latipium\Daemon\Api\Model\WebSocketRequest.cs" />
+    <Compile Include="Com\Latipium\Daemon\Api\Model\WebSocketResponse.cs" />
+    <Compile Include="Com\Latipium\Daemon\Api\Model\WebSocketTask.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
@@ -56,5 +66,12 @@
   </ProjectExtensions>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Com\" />
+    <Folder Include="Com\Latipium\" />
+    <Folder Include="Com\Latipium\Daemon\" />
+    <Folder Include="Com\Latipium\Daemon\Api\" />
+    <Folder Include="Com\Latipium\Daemon\Api\Model\" />
   </ItemGroup>
 </Project>
