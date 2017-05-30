@@ -15,9 +15,6 @@
     <licenseUrl>https://github.com/latipium/daemon-api/blob/master/LICENSE</licenseUrl>
     <copyright>Copyright (c) 2017 Latipium</copyright>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <dependencies>
-      <dependency id="log4net" version="2.0.5" />
-    </dependencies>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System" />
     </frameworkAssemblies>
