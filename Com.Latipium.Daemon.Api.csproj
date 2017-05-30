@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{78523371-9E06-4734-B1FA-B66FC4576EE6}</ProjectGuid>
-    <RootNamespace>Com.Latipium.Template</RootNamespace>
+    <ProjectGuid>{55052C43-D9CD-403A-AFD1-494E0943AB7E}</ProjectGuid>
+    <RootNamespace>Com.Latipium.Daemon.Api</RootNamespace>
     <CustomCommands>
       <CustomCommands>
         <Command type="Custom" name="Authorize CI" command="&quot;$(SolutionDir)/packages/CommandWrapper.2.2/bin/command-wrapper.exe&quot; WRAPPER_NUGET=true WRAPPER_ASK=3 -- &quot;$(SolutionDir)/packages/Com.Latipium.DevTools.1.2.2.2/bin/Com.Latipium.DevTools.exe&quot; authorize -C &quot;$(ProjectDir)&quot; &quot;Please enter your NuGet.org API key:&quot;" workingdir="$(SolutionDir)/packages/Com.Latipium.DevTools.1.2.2.2/" />
@@ -12,7 +12,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Exe</OutputType>
-    <AssemblyName>Com.Latipium.Template</AssemblyName>
+    <AssemblyName>Com.Latipium.Daemon.Api</AssemblyName>
     <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <Import Project="Com.Latipium.Template.xml" />

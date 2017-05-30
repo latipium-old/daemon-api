@@ -1,10 +1,10 @@
-﻿//
+//
 // AssemblyInfo.cs
 //
 // Author:
 //       Zach Deibert <zachdeibert@gmail.com>
 //
-// Copyright (c) 2016 Zach Deibert
+// Copyright (c) 2016 Latipium
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,11 +29,11 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security;
 
-[assembly: AssemblyTitle("Com.Latipium.Template")]
-[assembly: AssemblyDescription("A template for modules developers to use as a starting point for their modules")]
+[assembly: AssemblyTitle("Com.Latipium.Daemon.Api")]
+[assembly: AssemblyDescription("The API for creating modules for the Latipium Daemon")]
 [assembly: AssemblyCompany("Latipium")]
-[assembly: AssemblyProduct("Latipium Template")]
-[assembly: AssemblyCopyright("Zach Deibert")]
+[assembly: AssemblyProduct("Latipium Daemon API")]
+[assembly: AssemblyCopyright("Latipium")]
 
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
