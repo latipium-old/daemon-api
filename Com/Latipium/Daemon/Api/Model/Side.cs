@@ -26,9 +26,21 @@
 using System;
 
 namespace Com.Latipium.Daemon.Api.Model {
+    /// <summary>
+    /// The side of the launcher.
+    /// </summary>
     public enum Side {
+        /// <summary>
+        /// The client.
+        /// </summary>
         Client,
+        /// <summary>
+        /// The server.
+        /// </summary>
         Server,
+        /// <summary>
+        /// The module.
+        /// </summary>
         Module
     }
 }

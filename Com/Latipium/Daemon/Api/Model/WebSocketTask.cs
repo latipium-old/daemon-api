@@ -26,8 +26,17 @@
 using System;
 
 namespace Com.Latipium.Daemon.Api.Model {
+    /// <summary>
+    /// Web socket task.
+    /// </summary>
     public class WebSocketTask {
+        /// <summary>
+        /// The URL of the task.
+        /// </summary>
         public string Url;
+        /// <summary>
+        /// The request data.
+        /// </summary>
         public string Request;
     }
 }

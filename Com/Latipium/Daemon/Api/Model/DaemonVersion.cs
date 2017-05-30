@@ -27,9 +27,18 @@ using System;
 using System.Reflection;
 
 namespace Com.Latipium.Daemon.Api.Model {
+    /// <summary>
+    /// Response object containing the version of the daemon.
+    /// </summary>
     public class DaemonVersion : ResponseObject {
+        /// <summary>
+        /// The version.
+        /// </summary>
         public Version Version;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Com.Latipium.Daemon.Api.Model.DaemonVersion"/> class.
+        /// </summary>
         public DaemonVersion() {
             Version = Assembly.GetEntryAssembly().GetName().Version;
         }

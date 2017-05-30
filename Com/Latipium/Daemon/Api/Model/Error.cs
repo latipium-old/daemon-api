@@ -26,10 +26,22 @@
 using System;
 
 namespace Com.Latipium.Daemon.Api.Model {
+    /// <summary>
+    /// A response that represents an error.
+    /// </summary>
     public class Error : ResponseObject {
+        /// <summary>
+        /// The message.
+        /// </summary>
         public string Message;
+        /// <summary>
+        /// The side that the error occurred on.
+        /// </summary>
         public Side Side;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Com.Latipium.Daemon.Api.Model.Error"/> class.
+        /// </summary>
         public Error() {
             Successful = false;
         }

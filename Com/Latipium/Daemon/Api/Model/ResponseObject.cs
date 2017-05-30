@@ -26,7 +26,13 @@
 using System;
 
 namespace Com.Latipium.Daemon.Api.Model {
+    /// <summary>
+    /// The base response object.
+    /// </summary>
     public class ResponseObject {
+        /// <summary>
+        /// If the request was successful.
+        /// </summary>
         public bool Successful = true;
     }
 }

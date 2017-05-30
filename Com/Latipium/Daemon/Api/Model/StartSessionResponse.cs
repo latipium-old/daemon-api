@@ -26,8 +26,17 @@
 using System;
 
 namespace Com.Latipium.Daemon.Api.Model {
+    /// <summary>
+    /// Response to starting a session.
+    /// </summary>
     public class StartSessionResponse : ResponseObject {
+        /// <summary>
+        /// The detected display.
+        /// </summary>
         public DisplayDetectData Display;
+        /// <summary>
+        /// The client identifier.
+        /// </summary>
         public Guid ClientId;
     }
 }

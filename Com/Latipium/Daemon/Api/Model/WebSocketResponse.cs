@@ -26,7 +26,13 @@
 using System;
 
 namespace Com.Latipium.Daemon.Api.Model {
+    /// <summary>
+    /// Web socket response.
+    /// </summary>
     public class WebSocketResponse : ResponseObject {
+        /// <summary>
+        /// The responses.
+        /// </summary>
         public string[] Responses;
     }
 }

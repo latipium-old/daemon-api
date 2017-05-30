@@ -26,10 +26,25 @@
 using System;
 
 namespace Com.Latipium.Daemon.Api.Model {
+    /// <summary>
+    /// A request to load a module into the daemon.
+    /// </summary>
     public class LoadModuleRequest {
+        /// <summary>
+        /// The name of the module.
+        /// </summary>
         public string ModuleName;
+        /// <summary>
+        /// The minimum version.
+        /// </summary>
         public Version MinimumVersion;
+        /// <summary>
+        /// The preferred version.
+        /// </summary>
         public Version Version;
+        /// <summary>
+        /// The maximum version.
+        /// </summary>
         public Version MaximumVersion;
     }
 }
