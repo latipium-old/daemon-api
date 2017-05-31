@@ -58,32 +58,32 @@ namespace Com.Latipium.Daemon.Api.Process {
         }
 
         /// <summary>
-        /// Releases all resource used by the <see cref="Com.Latipium.Daemon.Api.Process.AbstractService`2"/> object.
+        /// Releases all resource used by the <see cref="Com.Latipium.Daemon.Api.Process.AbstractService"/> object.
         /// </summary>
         /// <remarks>Call <see cref="Dispose"/> when you are finished using the
-        /// <see cref="Com.Latipium.Daemon.Api.Process.AbstractService`2"/>. The <see cref="Dispose"/> method leaves the
-        /// <see cref="Com.Latipium.Daemon.Api.Process.AbstractService`2"/> in an unusable state. After calling
+        /// <see cref="Com.Latipium.Daemon.Api.Process.AbstractService"/>. The <see cref="Dispose"/> method leaves the
+        /// <see cref="Com.Latipium.Daemon.Api.Process.AbstractService"/> in an unusable state. After calling
         /// <see cref="Dispose"/>, you must release all references to the
-        /// <see cref="Com.Latipium.Daemon.Api.Process.AbstractService`2"/> so the garbage collector can reclaim the
-        /// memory that the <see cref="Com.Latipium.Daemon.Api.Process.AbstractService`2"/> was occupying.</remarks>
+        /// <see cref="Com.Latipium.Daemon.Api.Process.AbstractService"/> so the garbage collector can reclaim the
+        /// memory that the <see cref="Com.Latipium.Daemon.Api.Process.AbstractService"/> was occupying.</remarks>
         public void Dispose() {
             Dispose(true);
         }
 
         /// <summary>
-        /// Releases all resource used by the <see cref="Com.Latipium.Daemon.Api.Process.AbstractService`2"/> object.
+        /// Releases all resource used by the <see cref="Com.Latipium.Daemon.Api.Process.AbstractService"/> object.
         /// </summary>
         /// <remarks>Call <see cref="Dispose"/> when you are finished using the
-        /// <see cref="Com.Latipium.Daemon.Api.Process.AbstractService`2"/>. The <see cref="Dispose"/> method leaves the
-        /// <see cref="Com.Latipium.Daemon.Api.Process.AbstractService`2"/> in an unusable state. After calling
+        /// <see cref="Com.Latipium.Daemon.Api.Process.AbstractService"/>. The <see cref="Dispose"/> method leaves the
+        /// <see cref="Com.Latipium.Daemon.Api.Process.AbstractService"/> in an unusable state. After calling
         /// <see cref="Dispose"/>, you must release all references to the
-        /// <see cref="Com.Latipium.Daemon.Api.Process.AbstractService`2"/> so the garbage collector can reclaim the
-        /// memory that the <see cref="Com.Latipium.Daemon.Api.Process.AbstractService`2"/> was occupying.</remarks>
+        /// <see cref="Com.Latipium.Daemon.Api.Process.AbstractService"/> so the garbage collector can reclaim the
+        /// memory that the <see cref="Com.Latipium.Daemon.Api.Process.AbstractService"/> was occupying.</remarks>
         protected virtual void Dispose(bool disposing) {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Com.Latipium.Daemon.Api.Process.AbstractService`2"/> class.
+        /// Initializes a new instance of the <see cref="Com.Latipium.Daemon.Api.Process.AbstractService"/> class.
         /// </summary>
         /// <param name="id">Identifier.</param>
         protected AbstractService(string id) {
@@ -92,7 +92,7 @@ namespace Com.Latipium.Daemon.Api.Process {
 
         /// <summary>
         /// Releases unmanaged resources and performs other cleanup operations before the
-        /// <see cref="Com.Latipium.Daemon.Api.Process.AbstractService`2"/> is reclaimed by garbage collection.
+        /// <see cref="Com.Latipium.Daemon.Api.Process.AbstractService"/> is reclaimed by garbage collection.
         /// </summary>
         ~AbstractService() {
             Dispose(false);
