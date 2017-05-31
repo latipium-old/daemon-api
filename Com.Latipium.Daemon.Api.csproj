@@ -14,6 +14,7 @@
     <OutputType>Exe</OutputType>
     <AssemblyName>Com.Latipium.Daemon.Api</AssemblyName>
     <ReleaseVersion>1.0</ReleaseVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <Import Project="Com.Latipium.Template.xml" />
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -42,6 +43,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
@@ -56,6 +60,10 @@
     <Compile Include="Com\Latipium\Daemon\Api\Model\WebSocketRequest.cs" />
     <Compile Include="Com\Latipium\Daemon\Api\Model\WebSocketResponse.cs" />
     <Compile Include="Com\Latipium\Daemon\Api\Model\WebSocketTask.cs" />
+    <Compile Include="Com\Latipium\Daemon\Api\Process\DaemonProcess.cs" />
+    <Compile Include="Com\Latipium\Daemon\Api\Process\IService.cs" />
+    <Compile Include="Com\Latipium\Daemon\Api\Process\AbstractService.cs" />
+    <Compile Include="Com\Latipium\Daemon\Api\Process\Daemon.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
@@ -73,5 +81,6 @@
     <Folder Include="Com\Latipium\Daemon\" />
     <Folder Include="Com\Latipium\Daemon\Api\" />
     <Folder Include="Com\Latipium\Daemon\Api\Model\" />
+    <Folder Include="Com\Latipium\Daemon\Api\Process\" />
   </ItemGroup>
 </Project>

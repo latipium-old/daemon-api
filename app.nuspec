@@ -15,6 +15,9 @@
     <licenseUrl>https://github.com/latipium/daemon-api/blob/master/LICENSE</licenseUrl>
     <copyright>Copyright (c) 2017 Latipium</copyright>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <dependencies>
+      <dependency id="Newtonsoft.Json" version="9.0.1" />
+    </dependencies>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System" />
     </frameworkAssemblies>
