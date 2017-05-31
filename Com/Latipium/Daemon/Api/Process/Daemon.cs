@@ -24,6 +24,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Linq;
+using System.Net;
+using System.Net.Cache;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -36,6 +39,7 @@ namespace Com.Latipium.Daemon.Api.Process {
     /// The connection to the Latipium Daemon.
     /// </summary>
     public class Daemon : IDisposable {
+        private static readonly TimeSpan ConnectTimeout = TimeSpan.FromSeconds(15);
         private const int MaxReceiveSize = 8192;
         private ClientWebSocket Socket;
         private CancellationTokenSource CancellationTokenSource;
@@ -54,6 +58,24 @@ namespace Com.Latipium.Daemon.Api.Process {
         /// Occurs when the socket is closed.
         /// </summary>
         public event Action Closed;
+        private event Action _Opened;
+        /// <summary>
+        /// Occurs when the socket is opened.
+        /// </summary>
+        public event Action Opened {
+            add {
+                if (Connected) {
+                    value();
+                } else {
+                    _Opened += value;
+                }
+            }
+            remove {
+                _Opened -= value;
+            }
+        }
+        private WebClient WebClient;
+        private string BaseUrl;
 
         /// <summary>
         /// Sends the raw packet.
@@ -61,18 +83,22 @@ namespace Com.Latipium.Daemon.Api.Process {
         /// <returns>The response.</returns>
         /// <param name="message">The message.</param>
         public Task<string> SendRaw(string message) {
-            ArraySegment<byte> sendBuffer = new ArraySegment<byte>(Encoding.UTF8.GetBytes(message));
-            Task sendTask;
-            if (ReceiveTask == null) {
-                sendTask = Socket.SendAsync(sendBuffer, WebSocketMessageType.Text, true, CancellationTokenSource.Token);
+            if (WebClient == null) {
+                ArraySegment<byte> sendBuffer = new ArraySegment<byte>(Encoding.UTF8.GetBytes(message));
+                Task sendTask;
+                if (ReceiveTask == null) {
+                    sendTask = Socket.SendAsync(sendBuffer, WebSocketMessageType.Text, true, CancellationTokenSource.Token);
+                } else {
+                    sendTask = ReceiveTask.ContinueWith(async t => await Socket.SendAsync(sendBuffer, WebSocketMessageType.Text, true, CancellationTokenSource.Token));
+                }
+                return ReceiveTask = sendTask.ContinueWith(t => {
+                    Task<string> task = Socket.ReceiveAsync(ReceiveBuffer, CancellationTokenSource.Token).ContinueWith(ReadCallback);
+                    task.Wait();
+                    return task.Result;
+                });
             } else {
-                sendTask = ReceiveTask.ContinueWith(async t => await Socket.SendAsync(sendBuffer, WebSocketMessageType.Text, true, CancellationTokenSource.Token));
+                return Send(JsonConvert.DeserializeObject<WebSocketRequest>(message).Tasks).ContinueWith(t => JsonConvert.SerializeObject(t.Result));
             }
-            return ReceiveTask = sendTask.ContinueWith(t => {
-                Task<string> task = Socket.ReceiveAsync(ReceiveBuffer, CancellationTokenSource.Token).ContinueWith(ReadCallback);
-                task.Wait();
-                return task.Result;
-            });
         }
 
         /// <summary>
@@ -80,10 +106,16 @@ namespace Com.Latipium.Daemon.Api.Process {
         /// </summary>
         /// <param name="tasks">The tasks.</param>
         public Task<WebSocketResponse> Send(params WebSocketTask[] tasks) {
-            return SendRaw(JsonConvert.SerializeObject(new WebSocketRequest() {
-                ClientId = ClientId,
-                Tasks = tasks
-            })).ContinueWith(t => JsonConvert.DeserializeObject<WebSocketResponse>(t.Result));
+            if (WebClient == null) {
+                return SendRaw(JsonConvert.SerializeObject(new WebSocketRequest() {
+                    ClientId = ClientId,
+                    Tasks = tasks
+                })).ContinueWith(t => JsonConvert.DeserializeObject<WebSocketResponse>(t.Result));
+            } else {
+                return Task.Run(() => new WebSocketResponse() {
+                    Responses = tasks.Select(t => WebClient.UploadString(string.Concat(BaseUrl, t.Url), t.Request)).ToArray()
+                });
+            }
         }
 
         /// <summary>
@@ -92,7 +124,11 @@ namespace Com.Latipium.Daemon.Api.Process {
         /// <param name="task">The task.</param>
         /// <typeparam name="TResponse">The type of the response.</typeparam>
         public Task<TResponse> Send<TResponse>(WebSocketTask task) where TResponse : ResponseObject {
-            return Send(new [] { task }).ContinueWith(t => JsonConvert.DeserializeObject<TResponse>(t.Result.Responses[0]));
+            if (WebClient == null) {
+                return Send(new [] { task }).ContinueWith(t => JsonConvert.DeserializeObject<TResponse>(t.Result.Responses[0]));
+            } else {
+                return WebClient.UploadStringTaskAsync(string.Concat(BaseUrl, task.Url), task.Request).ContinueWith(t => JsonConvert.DeserializeObject<TResponse>(t.Result));
+            }
         }
 
         private string ReadCallback(Task<WebSocketReceiveResult> task) {
@@ -118,9 +154,18 @@ namespace Com.Latipium.Daemon.Api.Process {
         }
 
         private void ConnectCallback(Task task) {
-            if (!task.IsCanceled && !task.IsFaulted) {
-                Connected = true;
+            Connected = true;
+            if (task.IsCanceled || task.IsFaulted || Socket.State != WebSocketState.Open) {
+                WebClient = new WebClient();
+                WebClient.Headers["User-Agent"] = "Latipium Daemon (https://github.com/latipium/daemon)";
+                WebClient.Headers["X-Latipium-Client-Id"] = ClientId.ToString();
+                WebClient.CachePolicy = new RequestCachePolicy(RequestCacheLevel.NoCacheNoStore);
+            } else {
+                
                 ReceiveBuffer = new ArraySegment<byte>(new byte[MaxReceiveSize]);
+            }
+            if (_Opened != null) {
+                _Opened();
             }
         }
 
@@ -160,8 +205,11 @@ namespace Com.Latipium.Daemon.Api.Process {
             CancellationTokenSource = new CancellationTokenSource();
             Socket = new ClientWebSocket();
             Socket.Options.AddSubProtocol("latipium");
-            Socket.ConnectAsync(new Uri(url), CancellationTokenSource.Token).ContinueWith(ConnectCallback);
             ClientId = clientId;
+            BaseUrl = url;
+            CancellationTokenSource cts = new CancellationTokenSource();
+            Socket.ConnectAsync(new Uri(url), cts.Token).ContinueWith(t => cts.Cancel()).ContinueWith(ConnectCallback);
+            Task.Delay(ConnectTimeout, cts.Token).ContinueWith(t => cts.Cancel());
         }
 
         /// <summary>
