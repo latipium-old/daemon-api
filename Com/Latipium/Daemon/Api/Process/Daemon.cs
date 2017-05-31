@@ -127,10 +127,10 @@ namespace Com.Latipium.Daemon.Api.Process {
         /// <summary>
         /// Releases all resource used by the <see cref="Com.Latipium.Daemon.Api.Process.Daemon"/> object.
         /// </summary>
-        /// <remarks>Call <see cref="Dispose"/> when you are finished using the
-        /// <see cref="Com.Latipium.Daemon.Api.Process.Daemon"/>. The <see cref="Dispose"/> method leaves the
+        /// <remarks>Call <see cref="Dispose()"/> when you are finished using the
+        /// <see cref="Com.Latipium.Daemon.Api.Process.Daemon"/>. The <see cref="Dispose()"/> method leaves the
         /// <see cref="Com.Latipium.Daemon.Api.Process.Daemon"/> in an unusable state. After calling
-        /// <see cref="Dispose"/>, you must release all references to the
+        /// <see cref="Dispose()"/>, you must release all references to the
         /// <see cref="Com.Latipium.Daemon.Api.Process.Daemon"/> so the garbage collector can reclaim the memory that
         /// the <see cref="Com.Latipium.Daemon.Api.Process.Daemon"/> was occupying.</remarks>
         public void Dispose() {
@@ -140,10 +140,10 @@ namespace Com.Latipium.Daemon.Api.Process {
         /// <summary>
         /// Releases all resource used by the <see cref="Com.Latipium.Daemon.Api.Process.Daemon"/> object.
         /// </summary>
-        /// <remarks>Call <see cref="Dispose"/> when you are finished using the
-        /// <see cref="Com.Latipium.Daemon.Api.Process.Daemon"/>. The <see cref="Dispose"/> method leaves the
+        /// <remarks>Call <see cref="Dispose()"/> when you are finished using the
+        /// <see cref="Com.Latipium.Daemon.Api.Process.Daemon"/>. The <see cref="Dispose()"/> method leaves the
         /// <see cref="Com.Latipium.Daemon.Api.Process.Daemon"/> in an unusable state. After calling
-        /// <see cref="Dispose"/>, you must release all references to the
+        /// <see cref="Dispose()"/>, you must release all references to the
         /// <see cref="Com.Latipium.Daemon.Api.Process.Daemon"/> so the garbage collector can reclaim the memory that
         /// the <see cref="Com.Latipium.Daemon.Api.Process.Daemon"/> was occupying.</remarks>
         protected void Dispose(bool disposing) {
