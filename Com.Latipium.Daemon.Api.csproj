@@ -45,6 +45,7 @@
     <Reference Include="System" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>$(SolutionDir)\packages\Newtonsoft.Json.9.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Package>monodevelop</Package>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +65,10 @@
     <Compile Include="Com\Latipium\Daemon\Api\Process\IService.cs" />
     <Compile Include="Com\Latipium\Daemon\Api\Process\AbstractService.cs" />
     <Compile Include="Com\Latipium\Daemon\Api\Process\Daemon.cs" />
+    <Compile Include="Com\Latipium\Daemon\Api\Model\ModuleServiceRequest.cs" />
+    <Compile Include="Com\Latipium\Daemon\Api\Model\ModuleWork.cs" />
+    <Compile Include="Com\Latipium\Daemon\Api\Model\ModuleResults.cs" />
+    <Compile Include="Com\Latipium\Daemon\Api\Model\ModuleServiceResponse.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
