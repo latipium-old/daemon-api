@@ -206,9 +206,9 @@ namespace Com.Latipium.Daemon.Api.Process {
             Socket = new ClientWebSocket();
             Socket.Options.AddSubProtocol("latipium");
             ClientId = clientId;
-            BaseUrl = url;
+            BaseUrl = url.Replace("+", "localhost").Replace("*", "localhost");
             CancellationTokenSource cts = new CancellationTokenSource();
-            Socket.ConnectAsync(new Uri(url), cts.Token).ContinueWith(t => cts.Cancel()).ContinueWith(ConnectCallback);
+            Socket.ConnectAsync(new Uri(BaseUrl), cts.Token).ContinueWith(t => cts.Cancel()).ContinueWith(ConnectCallback);
             Task.Delay(ConnectTimeout, cts.Token).ContinueWith(t => cts.Cancel());
         }
 
