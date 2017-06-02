@@ -29,6 +29,7 @@ using System.Net;
 using System.Net.Cache;
 using System.Net.WebSockets;
 using System.Text;
+using System.Timers;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -41,6 +42,7 @@ namespace Com.Latipium.Daemon.Api.Process {
     public class Daemon : IDisposable {
         private static readonly TimeSpan ConnectTimeout = TimeSpan.FromSeconds(15);
         private const int MaxReceiveSize = 8192;
+        private const int PingTimeout = 60000;
         private ClientWebSocket Socket;
         private CancellationTokenSource CancellationTokenSource;
         private ArraySegment<byte> ReceiveBuffer;
@@ -76,6 +78,7 @@ namespace Com.Latipium.Daemon.Api.Process {
         }
         private WebClient WebClient;
         private string BaseUrl;
+        private System.Timers.Timer PingTimer;
 
         /// <summary>
         /// Sends the raw packet.
@@ -162,12 +165,24 @@ namespace Com.Latipium.Daemon.Api.Process {
                 WebClient.Headers["X-Latipium-Client-Id"] = ClientId.ToString();
                 WebClient.CachePolicy = new RequestCachePolicy(RequestCacheLevel.NoCacheNoStore);
             } else {
-                
                 ReceiveBuffer = new ArraySegment<byte>(new byte[MaxReceiveSize]);
             }
             if (_Opened != null) {
                 _Opened();
             }
+            PingTimer.Start();
+        }
+
+        private void Ping(object sender, ElapsedEventArgs e) {
+            bool pinged = false;
+            Send(new WebSocketTask() {
+                Url = "/version"
+            }).ContinueWith(t => pinged = t.Result != null && t.Result.Successful);
+            Task.Delay(PingTimeout, CancellationTokenSource.Token).ContinueWith(t => {
+                if (!pinged) {
+                    Dispose();
+                }
+            });
         }
 
         /// <summary>
@@ -194,11 +209,15 @@ namespace Com.Latipium.Daemon.Api.Process {
         /// the <see cref="Com.Latipium.Daemon.Api.Process.Daemon"/> was occupying.</remarks>
         protected void Dispose(bool disposing) {
             if (disposing) {
+                Closed?.Invoke();
                 Connected = false;
                 CancellationTokenSource.Cancel();
                 CancellationTokenSource cts = new CancellationTokenSource();
                 Socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Module disposed", cts.Token).ContinueWith(t => cts.Cancel());
                 Task.Delay(TimeSpan.FromSeconds(10), cts.Token).ContinueWith(t => cts.Cancel()).Wait();
+                PingTimer.Enabled = false;
+                PingTimer.Close();
+                PingTimer.Dispose();
             }
         }
 
@@ -211,6 +230,11 @@ namespace Com.Latipium.Daemon.Api.Process {
             CancellationTokenSource cts = new CancellationTokenSource();
             Socket.ConnectAsync(new Uri(BaseUrl.Replace("http", "ws")), cts.Token).ContinueWith(t => cts.Cancel()).ContinueWith(ConnectCallback);
             Task.Delay(ConnectTimeout, cts.Token).ContinueWith(t => cts.Cancel());
+            PingTimer = new System.Timers.Timer() {
+                AutoReset = true,
+                Interval = PingTimeout
+            };
+            PingTimer.Elapsed += Ping;
         }
 
         /// <summary>
