@@ -156,6 +156,7 @@ namespace Com.Latipium.Daemon.Api.Process {
         private void ConnectCallback(Task task) {
             Connected = true;
             if (task.IsCanceled || task.IsFaulted || Socket.State != WebSocketState.Open) {
+                Console.Error.WriteLine("WebSocket failed to initialize");
                 WebClient = new WebClient();
                 WebClient.Headers["User-Agent"] = "Latipium Daemon (https://github.com/latipium/daemon)";
                 WebClient.Headers["X-Latipium-Client-Id"] = ClientId.ToString();
@@ -208,7 +209,7 @@ namespace Com.Latipium.Daemon.Api.Process {
             ClientId = clientId;
             BaseUrl = url.Replace("+", "localhost").Replace("*", "localhost");
             CancellationTokenSource cts = new CancellationTokenSource();
-            Socket.ConnectAsync(new Uri(BaseUrl), cts.Token).ContinueWith(t => cts.Cancel()).ContinueWith(ConnectCallback);
+            Socket.ConnectAsync(new Uri(BaseUrl.Replace("http", "ws")), cts.Token).ContinueWith(t => cts.Cancel()).ContinueWith(ConnectCallback);
             Task.Delay(ConnectTimeout, cts.Token).ContinueWith(t => cts.Cancel());
         }
 
