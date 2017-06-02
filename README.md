@@ -1,2 +1,2 @@
 # Latipium Daemon API
-This repository is an outline for mods developed for Latipium.
+This API is used for creating daemon modules that the launcher can call in order to load Latipium.

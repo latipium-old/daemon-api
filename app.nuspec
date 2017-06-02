@@ -4,7 +4,7 @@
     <id>Com.Latipium.Daemon.Api</id>
     <version>{{ version }}</version>
     <title>Latipium Daemon API</title>
-    <authors>Latipium</authors>
+    <authors>Zach Deibert</authors>
     <description>The API for creating modules for the Latipium Daemon</description>
     <releaseNotes>
     </releaseNotes>
@@ -13,7 +13,7 @@
     <projectUrl>https://github.com/latipium/daemon-api</projectUrl>
     <iconUrl>https://latipium.com/favicon.ico</iconUrl>
     <licenseUrl>https://github.com/latipium/daemon-api/blob/master/LICENSE</licenseUrl>
-    <copyright>Copyright (c) 2017 Latipium</copyright>
+    <copyright>Copyright (c) 2017 Zach Deibert</copyright>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <dependencies>
       <dependency id="Newtonsoft.Json" version="9.0.1" />
