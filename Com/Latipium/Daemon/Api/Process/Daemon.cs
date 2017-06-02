@@ -201,7 +201,7 @@ namespace Com.Latipium.Daemon.Api.Process {
         private void Ping(object sender, ElapsedEventArgs e) {
             bool pinged = false;
             Send(new WebSocketTask() {
-                Url = "/version"
+                Url = "/ping"
             }).ContinueWith(t => pinged = t.Result != null && t.Result.Successful);
             Task.Delay(PingTimeout, CancellationTokenSource.Token).ContinueWith(t => {
                 if (!pinged) {
