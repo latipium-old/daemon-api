@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Cache;
@@ -80,6 +81,19 @@ namespace Com.Latipium.Daemon.Api.Process {
         private string BaseUrl;
         private System.Timers.Timer PingTimer;
 
+        private void WebsocketSendPart(byte[] sendBuffer, int off, CancellationTokenSource cts) {
+            int left = sendBuffer.Length - off;
+            Socket.SendAsync(new ArraySegment<byte>(sendBuffer, off, Math.Min(left, MaxReceiveSize)), WebSocketMessageType.Text, left <= MaxReceiveSize, CancellationTokenSource.Token).ContinueWith(t => {
+                if (!t.IsCanceled && !t.IsFaulted) {
+                    if (left <= MaxReceiveSize) {
+                        cts.Cancel();
+                    } else {
+                        WebsocketSendPart(sendBuffer, off + MaxReceiveSize, cts);
+                    }
+                }
+            });
+        }
+
         /// <summary>
         /// Sends the raw packet.
         /// </summary>
@@ -87,12 +101,17 @@ namespace Com.Latipium.Daemon.Api.Process {
         /// <param name="message">The message.</param>
         public Task<string> SendRaw(string message) {
             if (WebClient == null) {
-                ArraySegment<byte> sendBuffer = new ArraySegment<byte>(Encoding.UTF8.GetBytes(message));
+                byte[] buffer = Encoding.UTF8.GetBytes(message);
+                CancellationTokenSource cts = new CancellationTokenSource();
                 Task sendTask;
-                if (ReceiveTask == null) {
-                    sendTask = Socket.SendAsync(sendBuffer, WebSocketMessageType.Text, true, CancellationTokenSource.Token);
+                if (ReceiveTask == null || ReceiveTask.IsCompleted) {
+                    sendTask = Task.Delay(int.MaxValue, cts.Token);
+                    WebsocketSendPart(buffer, 0, cts);
                 } else {
-                    sendTask = ReceiveTask.ContinueWith(async t => await Socket.SendAsync(sendBuffer, WebSocketMessageType.Text, true, CancellationTokenSource.Token));
+                    sendTask = ReceiveTask.ContinueWith(async t => {
+                        WebsocketSendPart(buffer, 0, cts);
+                        await Task.Delay(int.MaxValue, cts.Token);
+                    });
                 }
                 return ReceiveTask = sendTask.ContinueWith(t => {
                     Task<string> task = Socket.ReceiveAsync(ReceiveBuffer, CancellationTokenSource.Token).ContinueWith(ReadCallback);
@@ -143,9 +162,15 @@ namespace Com.Latipium.Daemon.Api.Process {
                     if (task.Result.EndOfMessage) {
                         return Encoding.UTF8.GetString(ReceiveBuffer.Array, ReceiveBuffer.Offset, task.Result.Count);
                     } else {
-                        Socket.CloseAsync(WebSocketCloseStatus.MessageTooBig, "Message too big", CancellationTokenSource.Token);
+                        List<byte[]> parts = new List<byte[]>();
+                        parts.Add(ReceiveBuffer.Array.Skip(ReceiveBuffer.Offset).Take(task.Result.Count).ToArray());
+                        do {
+                            task = Socket.ReceiveAsync(ReceiveBuffer, CancellationTokenSource.Token);
+                            task.Wait();
+                            parts.Add(ReceiveBuffer.Array.Skip(ReceiveBuffer.Offset).Take(task.Result.Count).ToArray());
+                        } while (!task.Result.EndOfMessage);
+                        return Encoding.UTF8.GetString(parts.SelectMany(a => a).ToArray());
                     }
-                    break;
                 case WebSocketMessageType.Close:
                     Socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client closed", CancellationTokenSource.Token);
                     break;
