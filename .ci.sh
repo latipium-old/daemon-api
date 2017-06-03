@@ -1,5 +1,9 @@
 #!/bin/bash
 set -e
 
-xbuild /t:CalculateVersion /p:Configuration=Prerelease /p:SolutionDir=$(pwd) *.csproj
-xbuild /t:CIBuild /p:Configuration=Prerelease /p:SolutionDir=$(pwd) *.csproj
+# Build
+msbuild /t:CoreCompile /p:Configuration=Prerelease /p:SolutionDir=$(pwd) *.csproj
+
+# Deploy
+git fetch --unshallow # Fixes version number generation for more than 50 commits
+msbuild /t:CIBuild /p:Configuration=Prerelease /p:SolutionDir=$(pwd) *.csproj
