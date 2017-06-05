@@ -44,6 +44,7 @@ namespace Com.Latipium.Daemon.Api.Process {
         private static readonly TimeSpan ConnectTimeout = TimeSpan.FromSeconds(15);
         private const int MaxReceiveSize = 8192;
         private const int PingTimeout = 60000;
+        private const string UserAgent = "Latipium Daemon (https://github.com/latipium/daemon)";
         private ClientWebSocket Socket;
         private CancellationTokenSource CancellationTokenSource;
         private ArraySegment<byte> ReceiveBuffer;
@@ -135,7 +136,10 @@ namespace Com.Latipium.Daemon.Api.Process {
                 })).ContinueWith(t => JsonConvert.DeserializeObject<WebSocketResponse>(t.Result));
             } else {
                 return Task.Run(() => new WebSocketResponse() {
-                    Responses = tasks.Select(t => WebClient.UploadString(string.Concat(BaseUrl, t.Url), t.Request)).ToArray()
+                    Responses = tasks.Select(t => {
+                        WebClient.Headers["User-Agent"] = UserAgent;
+                        return WebClient.UploadString(string.Concat(BaseUrl, t.Url), t.Request);
+                    }).ToArray()
                 });
             }
         }
@@ -149,6 +153,7 @@ namespace Com.Latipium.Daemon.Api.Process {
             if (WebClient == null) {
                 return Send(new [] { task }).ContinueWith(t => JsonConvert.DeserializeObject<TResponse>(t.Result.Responses[0]));
             } else {
+                WebClient.Headers["User-Agent"] = UserAgent;
                 return WebClient.UploadStringTaskAsync(string.Concat(BaseUrl, task.Url), task.Request).ContinueWith(t => JsonConvert.DeserializeObject<TResponse>(t.Result));
             }
         }
@@ -186,7 +191,6 @@ namespace Com.Latipium.Daemon.Api.Process {
             if (task.IsCanceled || task.IsFaulted || Socket.State != WebSocketState.Open) {
                 Console.Error.WriteLine("WebSocket failed to initialize");
                 WebClient = new WebClient();
-                WebClient.Headers["User-Agent"] = "Latipium Daemon (https://github.com/latipium/daemon)";
                 WebClient.Headers["X-Latipium-Client-Id"] = ClientId.ToString();
                 WebClient.CachePolicy = new RequestCachePolicy(RequestCacheLevel.NoCacheNoStore);
             } else {
