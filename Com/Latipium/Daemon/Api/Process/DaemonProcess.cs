@@ -55,6 +55,7 @@ namespace Com.Latipium.Daemon.Api.Process {
                         try {
                             results[request.Key] = Services[request.Value.ServiceId].HandleRequest(request.Value.Message);
                         } catch (Exception ex) {
+                            Console.Error.WriteLine(ex);
                             results[request.Key] = JsonConvert.SerializeObject(new Error() {
                                 Message = ex.Message,
                                 Side = Side.Module
